@@ -25,6 +25,7 @@
 /****************************************************************************************
 *
 * Created on: 			20-10-2015
+* Supported Hardware: ID150119-02 Nexus board with RFM95
 *
 * Firmware Version 1.0
 * First version

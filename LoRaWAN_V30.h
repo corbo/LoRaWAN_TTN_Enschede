@@ -16,36 +16,46 @@
 ******************************************************************************************/
 /******************************************************************************************
 *
-* File:        AES-128_V10.h
+* File:        LoRaWAN_V30.h
 * Author:      Gerben den Hartog
 * Compagny:    Ideetron B.V.
 * Website:     http://www.ideetron.nl/LoRa
 * E-mail:      info@ideetron.nl
 ******************************************************************************************/
+
 /****************************************************************************************
 *
-* Created on: 			20-10-2015
-* Supported Hardware: ID150119-02 Nexus board with RFM95
+* Created on: 			  20-11-2015
+* Supported Hardware:	ID150119-02 Nexus board with RFM95
 *
-* Firmware Version 1.0
-* First version
+* History:
+*
+* Firmware version: 1.0
+* First version for LoRaWAN
+* 
+* Firmware version: 2.0
+* Ported to Arduino using own AES encryption
+* 
+* Firmware version 3.0
+* Added receiving in receive slot 2
 ****************************************************************************************/
 
-#ifndef AES128_V10_H
-#define AES128_V10_H
+#ifndef LORAWAN_V30_H
+#define LORAWAN_V30_H
 
 /*
-********************************************************************************************
-* FUNCTION PORTOTYPES
-********************************************************************************************
+*****************************************************************************************
+* DEFINES
+*****************************************************************************************
 */
 
-void AES_Encrypt(unsigned char *Data, unsigned char *Key);
-void AES_Add_Round_Key(unsigned char *Round_Key);
-unsigned char AES_Sub_Byte(unsigned char Byte);
-void AES_Shift_Rows();
-void AES_Mix_Collums();
-void AES_Calculate_Round_Key(unsigned char Round, unsigned char *Round_Key);
-void Send_State();
+#define DS2401  2
+#define MFP     3
+#define DIO0    4
+#define DIO1    5 
+#define DIO5    6
+#define DIO2    7
+#define CS      8
+#define LED     9
 
 #endif
