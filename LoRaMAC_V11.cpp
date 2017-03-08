@@ -78,7 +78,9 @@ unsigned char LORA_Cycle(unsigned char *Data_Tx, unsigned char *Data_Rx, unsigne
 	unsigned char Data_Length_Rx;
   unsigned char i;
 
-	//Time to wait in ms for receive slot 2
+  unsigned long time;
+  unsigned char strt;
+
 	unsigned char Receive_Delay_2 = 17;
 
 	LORA_Send_Data(Data_Tx, Data_Length_Tx, Frame_Counter_Up);
@@ -86,12 +88,15 @@ unsigned char LORA_Cycle(unsigned char *Data_Tx, unsigned char *Data_Rx, unsigne
 	//Raise frame counter
 	Frame_Counter_Up++;
 
+  
   for(i = 0; i <= Receive_Delay_2; i ++ )
   {
     WaitLoop(100);
   }
-
+  
 	Data_Length_Rx = LORA_Receive_Data(Data_Rx);
+
+  
 
 	return Data_Length_Rx;
 }
@@ -205,8 +210,8 @@ unsigned char LORA_Receive_Data(unsigned char *Data)
 
 
 	Message_Status = RFM_Receive();
-
-
+ 
+  
 	//if CRC ok breakdown package
 	if(Message_Status == CRC_OK)
 	{

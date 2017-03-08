@@ -76,25 +76,62 @@ void RFM_Init()
   RFM_Write(0x07,0x06);
   RFM_Write(0x08,0x8B);
 
-  //PA pin (maximal power)
-  RFM_Write(0x09,0xFF);
+  RFM_Write(0x09,0xFF);   
 
   //BW = 125 kHz, Coding rate 4/5, Explicit header mode
   RFM_Write(0x1D,0x72);
 
-  //Spreading factor 7, PayloadCRC On
-  RFM_Write(0x1E,0xB4);
+  //Spreading factor 9, PayloadCRC On
+  //RFM_Write(0x1E,0x94); // SF9
 
-  //Rx Timeout set to 37 symbols
-  RFM_Write(0x1F,0x25);
+   switch (SF) {
+          case 7: 
+            RFM_Write(0x1E,0x74); // SF7
+            break;
+          case 8: 
+            RFM_Write(0x1E,0x84); // SF8
+            break;
+          case 9: 
+            RFM_Write(0x1E,0x94); // SF9
+            break;
+          case 10: 
+            RFM_Write(0x1E,0xA4); // SF10
+            break;
+          case 11: 
+            RFM_Write(0x1E,0xB4); // SF11
+            break;
+          case 12: 
+            RFM_Write(0x1E,0xC4); // SF12
+            break;
+          default:
+            RFM_Write(0x1E,0x94); // SF9
+            break; 
+        }
 
+  RFM_Write(0x1F,0x25); // Original value
+    
   //Preamble length set to 8 symbols
   //0x0008 + 4 = 12
   RFM_Write(0x20,0x00);
   RFM_Write(0x21,0x08);
 
   //Low datarate optimization off AGC auto on
-  RFM_Write(0x26,0x0C);
+  // RFM_Write(0x26,0x04);
+ // Jeroen: For low datarate optimization ON AGC auto on (Jeroen) and mobile node ON (mobile node ON is a must for SF11 and SF12!!)
+ // Jeroen: In that case change register to (see RFM95 specs)
+  //RFM_Write(0x26,0x0C);
+
+  switch (SF) {
+          case 11: 
+            RFM_Write(0x26,0x0C);  //SF11
+            break;
+          case 12: 
+            RFM_Write(0x26,0x0C); // SF12
+            break;
+          default:
+            RFM_Write(0x26,0x04);  //SF7-SF10
+            break; 
+        }
 
   //Set LoRa sync word
   RFM_Write(0x39,0x34);
@@ -136,13 +173,36 @@ void RFM_Send_Package(unsigned char *RFM_Tx_Package, unsigned char Package_Lengt
 
   //Set carrier frequency
   // 868.100 MHz / 61.035 Hz = 14222987 = 0xD9068B
-  RFM_Write(0x06,0xD9);
-  RFM_Write(0x07,0x06);
-  RFM_Write(0x08,0x8B);
+  RFM_Write(0x06,0xD9);     //RegFrfMsb (RF Carrier Frequency, Most Significant Bits)
+  RFM_Write(0x07,0x06);     //RegFrfMid (RF Carrier Frequency, Intermediate Bits)
+  RFM_Write(0x08,0x8B);     //RegFrfLsb (RF Carrier Frequency, Least Significant Bits)
 
-  //Switch to SF7 CRC on payload on
-  RFM_Write(0x1E,0xB4);
+  //RFM_Write(0x1E,0x94); // SF9
 
+  switch (SF) {
+          case 7: 
+            RFM_Write(0x1E,0x74); // SF7
+            break;
+          case 8: 
+            RFM_Write(0x1E,0x84); // SF8
+            break;
+          case 9: 
+            RFM_Write(0x1E,0x94); // SF9
+            break;
+          case 10: 
+            RFM_Write(0x1E,0xA4); // SF10
+            break;
+          case 11: 
+            RFM_Write(0x1E,0xB4); // SF11
+            break;
+          case 12: 
+            RFM_Write(0x1E,0xC4); // SF12
+            break;
+          default:
+            RFM_Write(0x1E,0x94); // SF9
+            break; 
+        }
+   
   //Set IQ to normal values
   RFM_Write(0x33,0x27);
   RFM_Write(0x3B,0x1D);
@@ -178,6 +238,9 @@ void RFM_Send_Package(unsigned char *RFM_Tx_Package, unsigned char Package_Lengt
 *****************************************************************************************
 */
 
+// JVB: The Downlink is on 869.525 MHz, 125 kHz BW and SF9.
+// Frequency is set 
+
 message_t RFM_Receive()
 {
   message_t Message_Status = NO_MESSAGE;
@@ -186,7 +249,7 @@ message_t RFM_Receive()
   unsigned char Timer = 0x00;
 
   //Set carrier freqeuncy
-  //869.525 / 61.035 = 14246334 = 0xD961BE
+  //869.525 MHz / 61.035 Hz = 14246334 = 0xD961BE
   RFM_Write(0x06,0xD9);
   RFM_Write(0x07,0x61);
   RFM_Write(0x08,0xBE);
@@ -231,10 +294,12 @@ message_t RFM_Receive()
     if((RFM_Interrupt & 0x20) != 0x20)
     {
       Message_Status = CRC_OK;
+      Serial.println("CRC_OK");
     }
     else
     {
       Message_Status = WRONG_MESSAGE;
+      Serial.println("Wrong_MESSAGE");
     }
   }
 

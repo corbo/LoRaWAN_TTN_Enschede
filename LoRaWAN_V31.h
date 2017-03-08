@@ -51,13 +51,11 @@
 *****************************************************************************************
 */
 
-#define DS2401  2
-#define MFP     3
 #define DIO0    4
 #define DIO1    5
 #define DIO5    6
 #define DIO2    7
 #define CS      8
-#define LED     9
+#define SF      9   // Needs to be changed later to an variable which can be changed on the fly
 
 #endif
