@@ -1,3 +1,4 @@
+/* Cor      22-4-2017 - Uitgangspunt voor de TTN Enschede bouwavond
 /* Jeroen / 5-12-2016 - kale Ideetron versie genomen met kleine aanpassingen voor TTN Apeldoorn bouwavond 
 /******************************************************************************************
 * Copyright 2015, 2016 Ideetron B.V.
@@ -77,9 +78,16 @@
 
 // This key is for thethingsnetwork (ABP device) - register your device on: https://staging.thethingsnetwork.org/applications
 // Registreren en eigen keys invullen
-//unsigned char NwkSkey[16] = { 0x00, 0x96, 0x00, 0x2F, 0x0F, 0x0A, 0xAA, 0x1F, 0xCB, 0x33, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00 };
-//unsigned char AppSkey[16] = { 0x00, 0x3F, 0x00, 0x12, 0xD9, 0xE7, 0x35, 0x0C, 0xE1, 0xC8, 0xD2, 0x00, 0x00, 0x00, 0x00, 0x00 };
-//unsigned char DevAddr[4] = { 0x00, 0x19, 0x00, 0x00 };
+// Address en sleutels voor staging.thethingsnetwork.org
+//unsigned char NwkSkey[16] = { 0x9D, 0x69, 0x3B, 0x9B, 0xB5, 0x73, 0x63, 0xD4, 0x42, 0x4B, 0x35, 0x96, 0xE6, 0x48, 0x22, 0x32 };
+//unsigned char AppSkey[16] = { 0x30, 0x2F, 0x26, 0x59, 0x56, 0x30, 0x4B, 0x74, 0x78, 0x0B, 0x3A, 0x05, 0x80, 0xDF, 0xC3, 0xEE };
+//unsigned char DevAddr[4] = {  0x92, 0xF0, 0x2B, 0xE4 };
+
+// Address en sleutels voor console.thethingsnetwork.org
+unsigned char NwkSkey[16] = { 0x06, 0x16, 0x67, 0x62, 0x10, 0x0B, 0xD7, 0xDD, 0x8A, 0xC9, 0xA3, 0x9A, 0xF6, 0x05, 0xDA, 0x57 };
+unsigned char AppSkey[16] = { 0x9C, 0x82, 0x5A, 0x25, 0x06, 0xAA, 0xBD, 0xDA, 0xC5, 0x20, 0xA4, 0x93, 0x49, 0x5B, 0x21, 0x28 };
+unsigned char DevAddr[4] = { 0x26, 0x01, 0x11, 0x35 };
+
 
 int FC = 0;
 // SF to set in LoRaWAN)V31.h (default SF9 is set) - quick and dirty implemented (TBC)
@@ -89,7 +97,7 @@ void setup()
   //Initialize the UART
   Serial.begin(115200);
   Serial.println("---");
-  Serial.println("What: TTN Apeldoorn - LoRa node bouwavond / 'hello world'");
+  Serial.println("What: TTN Enschede - LoRa node bouwavond / 'hello world'");
   Serial.println("Setup: Initialized serial port");
 
    //Initialise the SPI port
@@ -132,8 +140,6 @@ void loop()
   RFM_Init();
   delay(1000);
 
-  while(1)
-  {
     // Here the sensor information should be retrieved 
    
     //Construct data 
@@ -152,5 +158,4 @@ void loop()
     Serial.println("Loop: Start waiting loop (1 minutes)");
     delay(60000);
     Serial.println("---");
-  }//While(1)
 }
