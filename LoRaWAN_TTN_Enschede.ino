@@ -1,3 +1,4 @@
+/* Cor      07-6-2017 - Cayenne LPP datastructuur
 /* Cor      22-4-2017 - Uitgangspunt voor de TTN Enschede bouwavond
 /* Jeroen / 5-12-2016 - kale Ideetron versie genomen met kleine aanpassingen voor TTN Apeldoorn bouwavond 
 /******************************************************************************************
@@ -60,6 +61,11 @@
 * Merged I2C_ReadAllData.ino from 
 * https://github.com/sparkfun/SparkFun_BME280_Arduino_Library
 * for interfacing with the BMP280
+* 
+* Firmware version 3.3
+* Use Cayenne Low Power Payload datastructures
+*   in order to use myDevices.com account
+*   
 ****************************************************************************************/
 
 /*
@@ -78,6 +84,7 @@
 
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP280.h>
+#include <CayenneLPP.h>
 
 /*
 *****************************************************************************************
@@ -115,6 +122,8 @@ int FC = 0;
 Adafruit_BMP280 bmp; // I2C
 //Adafruit_BMP280 bmp(BMP_CS); // hardware SPI
 //Adafruit_BMP280 bmp(BMP_CS, BMP_MOSI, BMP_MISO,  BMP_SCK);
+
+CayenneLPP lpp(51);                    // create a buffer of 51 bytes to store the payload
 
 void setup() 
 {
@@ -186,16 +195,24 @@ void loop()
   Serial.println();
    
     //Construct data 
-    sprintf(msg,"Hello world!");
-    sprintf(msg,"%d.%02d C %ld.%02ld hPa", (int)bmp.readTemperature(), (int)(bmp.readTemperature()*100)%100, (long)bmp.readPressure()/100, (long)bmp.readPressure()%100);
-    memcpy(Data_Tx, msg, strlen(msg));
-    Data_Length_Tx = strlen(msg);
+//    sprintf(msg,"Hello world!");
+//    sprintf(msg,"%d.%02d C %ld.%02ld hPa", (int)bmp.readTemperature(), (int)(bmp.readTemperature()*100)%100, (long)bmp.readPressure()/100, (long)bmp.readPressure()%100);
+//    memcpy(Data_Tx, msg, strlen(msg));
+//    Data_Length_Tx = strlen(msg);
 
-    Serial.print("Loop: Message content:");
-    Serial.println(msg);
+//    Serial.print("Loop: Message content:");
+//    Serial.println(msg);
+
+    lpp.reset();                           // clear the buffer
+    lpp.addTemperature(1, bmp.readTemperature());           // on channel 1, add temperature, value 22.5°C
+    lpp.addBarometricPressure(2, (bmp.readPressure() / 100.0)); // channel 2, pressure
+//    lpp.addGPS(3, 52.37365, 4.88650, 2);   // channel 3, coordinates
+
+//    ttn.sendBytes(lpp.getBuffer(), lpp.getSize());
 
     Serial.println("Loop: Sending data");
-    Data_Length_Rx = LORA_Cycle(Data_Tx, Data_Rx, Data_Length_Tx);
+//    Data_Length_Rx = LORA_Cycle(Data_Tx, Data_Rx, Data_Length_Tx);
+    Data_Length_Rx = LORA_Cycle(lpp.getBuffer(), Data_Rx, lpp.getSize());
     FC = FC + 1;
     
     //Delay of 1 minute 
