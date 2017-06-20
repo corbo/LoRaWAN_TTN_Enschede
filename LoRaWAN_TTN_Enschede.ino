@@ -82,8 +82,18 @@
 #include "LoRaMAC_V11.h"
 #include "Waitloop_V11.h"
 
+
+// Installeer libraries via
+//      Sketch|Include Library|Manage Libraries
+//      filter dan op:
+
+//          Adafruit Unified Sensor
 #include <Adafruit_Sensor.h>
+
+//          Adafruit BMP280 Library
 #include <Adafruit_BMP280.h>
+
+//          Cayenne
 #include <CayenneLPP.h>
 
 /*
